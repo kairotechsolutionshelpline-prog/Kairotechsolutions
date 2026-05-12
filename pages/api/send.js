@@ -20,16 +20,13 @@ function buildHTML(name, email, submissionDate) {
   const formatted = deadline ? deadline.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : null
   const countdown = deadline ? getCountdownText(submissionDate) : null
 
-  const countdownBlock = deadline ? `
-  <div style="background:#FFF8E6;border:1px solid #F5C842;border-radius:8px;padding:14px 16px;margin-bottom:16px;text-align:center;">
-    <p style="font-size:12px;font-weight:600;color:#7A5C00;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">⏰ Submission Deadline</p>
-    <p style="font-size:15px;font-weight:700;color:#7A5C00;margin-bottom:12px;">📅 ${formatted}</p>
-    href="https://kairotechsolutions-production.up.railway.app/countdown/${submissionDate}"
-       style="display:inline-block;background:#185FA5;color:#fff;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;text-decoration:none;">
-      ⏱ View Live Countdown
-    </a>
-    <p style="font-size:12px;color:#7A5C00;margin-top:10px;">Please complete your submission before the deadline.</p>
-  </div>` : ''
+const countdownBlock = deadline ? `
+<div style="background:#FFF8E6;border:1px solid #F5C842;border-radius:8px;padding:10px 14px;margin-bottom:16px;text-align:center;">
+  <p style="font-size:11px;font-weight:600;color:#7A5C00;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 6px;">⏰ Submission Deadline</p>
+  <p style="font-size:14px;font-weight:700;color:#C0392B;margin:0 0 6px;">📅 ${formatted}</p>
+  <p style="font-size:12px;color:#7A5C00;margin:0 0 4px;">⚠️ Please complete your submission by <strong>the previous night — 11:59 PM</strong></p>
+  <p style="font-size:11px;color:#999;margin:0;">The deadline day is for verification, not submission.</p>
+</div>` : ''
 
   return `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:0;">
 <div style="background:#185FA5;padding:18px 24px;display:flex;align-items:center;gap:12px;">
@@ -45,12 +42,12 @@ function buildHTML(name, email, submissionDate) {
   <p style="font-size:14px;color:#444;margin-bottom:20px;">You have been registered successfully with Kairotech Solutions.<br>Thank you for working with us!</p>
   <div style="background:#f5f5f5;border-radius:8px;padding:14px 16px;margin-bottom:16px;">
     <p style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Your login credentials</p>
-    <p style="font-size:13px;margin:6px 0;">🔗 <strong>Login:</strong> <a href="https://redalertsol.com/" style="color:#185FA5;">https://redalertsol.com/</a></p>
+    <p style="font-size:13px;margin:6px 0;">🔗 <strong>Login:</strong> <a href="https://kairotechsolutions-production.up.railway.app/" style="color:#185FA5;">Click here to login</a></p>
     <p style="font-size:13px;margin:6px 0;">👤 <strong>Username:</strong> ${email}</p>
     <p style="font-size:13px;margin:6px 0;">🔑 <strong>Password:</strong> Your Phone Number</p>
   </div>
   ${countdownBlock}
-  <a href="https://redalertsol.com/" style="display:block;text-align:center;background:#185FA5;color:#ffffff;border-radius:8px;padding:11px;font-size:14px;font-weight:600;text-decoration:none;margin-bottom:20px;">🔗 Go to Login Page</a>
+  <a href="https://kairotechsolutions-production.up.railway.app/" style="display:block;text-align:center;background:#185FA5;color:#ffffff;border-radius:8px;padding:11px;font-size:14px;font-weight:600;text-decoration:none;margin-bottom:20px;">🔗 Go to Login Page</a>
   <div style="background:#E6F1FB;border-radius:8px;padding:16px;margin-bottom:16px;">
     <p style="font-size:14px;font-weight:600;color:#0C447C;margin-bottom:8px;">🌟 Need Help? We're Here for You!</p>
     <p style="font-size:13px;color:#185FA5;margin-bottom:10px;">If you have any questions or need assistance, feel free to contact our Helpline Team. We'll be happy to help! 😊</p>
