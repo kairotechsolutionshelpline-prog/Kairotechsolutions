@@ -180,7 +180,7 @@ export default function Home() {
           <textarea
             value={pasteText}
             onChange={e => setPasteText(e.target.value)}
-            placeholder={"Sharmila S\tsathishkumar.sharmila@gmail.com\nVamshika Burrewar\tvamshikaburrewar@gmail.com\nRam Poojan Mishra\trpmishra8569@gmail.com"}
+            placeholder={"Sharmila S\tsathishkumar.sharmila@gmail.com\nrajesh\trajeshkaburrewar@gmail.com\nRam Poojan Mishra\trpmishra8569@gmail.com"}
             style={styles.textarea}
           />
           <button onClick={parseMembers} style={{ ...styles.primaryBtn, width: 'auto', marginTop: '10px' }}>
