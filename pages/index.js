@@ -9,6 +9,7 @@ export default function Home() {
   const [members, setMembers] = useState([])
   const [sending, setSending] = useState(false)
   const [history, setHistory] = useState([])
+  const [submissionDate, setSubmissionDate] = useState('')
 
   useEffect(() => {
     const a = sessionStorage.getItem('kt_auth')
@@ -16,6 +17,18 @@ export default function Home() {
     const h = localStorage.getItem('kt_history')
     if (h) setHistory(JSON.parse(h))
   }, [])
+
+  function getDateOptions() {
+    const options = []
+    for (let i = 0; i <= 4; i++) {
+      const d = new Date()
+      d.setDate(d.getDate() + i)
+      const label = d.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      const value = d.toISOString().split('T')[0]
+      options.push({ label, value })
+    }
+    return options
+  }
 
   async function handleLogin(e) {
     e.preventDefault()
@@ -61,7 +74,7 @@ export default function Home() {
     const res = await fetch('/api/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ members: pendingMembers })
+      body: JSON.stringify({ members: pendingMembers, submissionDate })
     })
     const data = await res.json()
 
@@ -184,7 +197,22 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <button onClick={sendAll} disabled={sending} style={{ ...styles.primaryBtn, marginTop: '1rem', opacity: sending ? 0.7 : 1 }}>
+
+            <div style={{ marginTop: '16px', marginBottom: '12px' }}>
+              <label style={styles.label}>📅 Submission Deadline (optional)</label>
+              <select
+                value={submissionDate}
+                onChange={e => setSubmissionDate(e.target.value)}
+                style={{ ...styles.input, marginBottom: 0 }}
+              >
+                <option value="">-- No deadline --</option>
+                {getDateOptions().map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <button onClick={sendAll} disabled={sending} style={{ ...styles.primaryBtn, marginTop: '8px', opacity: sending ? 0.7 : 1 }}>
               {sending ? 'Sending emails...' : 'Send all emails'}
             </button>
           </div>
@@ -215,7 +243,7 @@ export default function Home() {
               <p style={{ fontSize: '14px', fontWeight: '500' }}>kairotechsolutionshelpline@gmail.com</p>
             </div>
           </div>
-          <a
+          
             href="mailto:kairotechsolutionshelpline@gmail.com?subject=Helpline Request&body=Hi Kairotech Helpline Team,%0A%0AName : %0AIssue : %0A%0AThank you."
             style={styles.mailLink}
           >
