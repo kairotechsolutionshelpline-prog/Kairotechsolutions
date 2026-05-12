@@ -2,7 +2,49 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-function buildHTML(name, email) {
+function getCountdownText(deadlineDate) {
+  const now = new Date()
+  const deadline = new Date(deadlineDate)
+  deadline.setHours(0, 0, 0, 0)
+  const diff = deadline - now
+  if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 }
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+  return { days, hours, minutes, seconds }
+}
+
+function buildHTML(name, email, submissionDate) {
+  const deadline = submissionDate ? new Date(submissionDate) : null
+  const formatted = deadline ? deadline.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : null
+  const countdown = deadline ? getCountdownText(submissionDate) : null
+
+  const countdownBlock = deadline ? `
+  <div style="background:#FFF8E6;border:1px solid #F5C842;border-radius:8px;padding:14px 16px;margin-bottom:16px;text-align:center;">
+    <p style="font-size:12px;font-weight:600;color:#7A5C00;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">⏰ Submission Deadline</p>
+    <p style="font-size:15px;font-weight:700;color:#7A5C00;margin-bottom:10px;">📅 ${formatted}</p>
+    <div style="display:inline-flex;gap:10px;justify-content:center;">
+      <div style="background:#fff;border:1px solid #F5C842;border-radius:6px;padding:8px 14px;min-width:52px;">
+        <div style="font-size:22px;font-weight:700;color:#185FA5;">${countdown.days}</div>
+        <div style="font-size:10px;color:#888;">Days</div>
+      </div>
+      <div style="background:#fff;border:1px solid #F5C842;border-radius:6px;padding:8px 14px;min-width:52px;">
+        <div style="font-size:22px;font-weight:700;color:#185FA5;">${countdown.hours}</div>
+        <div style="font-size:10px;color:#888;">Hours</div>
+      </div>
+      <div style="background:#fff;border:1px solid #F5C842;border-radius:6px;padding:8px 14px;min-width:52px;">
+        <div style="font-size:22px;font-weight:700;color:#185FA5;">${countdown.minutes}</div>
+        <div style="font-size:10px;color:#888;">Minutes</div>
+      </div>
+      <div style="background:#fff;border:1px solid #F5C842;border-radius:6px;padding:8px 14px;min-width:52px;">
+        <div style="font-size:22px;font-weight:700;color:#185FA5;">${countdown.seconds}</div>
+        <div style="font-size:10px;color:#888;">Seconds</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#7A5C00;margin-top:10px;">Please complete your submission before the deadline.</p>
+  </div>` : ''
+
   return `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:0;">
 <div style="background:#185FA5;padding:18px 24px;display:flex;align-items:center;gap:12px;">
   <div style="width:40px;height:40px;border-radius:50%;background:#E6F1FB;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#185FA5;">${name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div>
@@ -21,6 +63,7 @@ function buildHTML(name, email) {
     <p style="font-size:13px;margin:6px 0;">👤 <strong>Username:</strong> ${email}</p>
     <p style="font-size:13px;margin:6px 0;">🔑 <strong>Password:</strong> Your Phone Number</p>
   </div>
+  ${countdownBlock}
   <a href="https://redalertsol.com/" style="display:block;text-align:center;background:#185FA5;color:#ffffff;border-radius:8px;padding:11px;font-size:14px;font-weight:600;text-decoration:none;margin-bottom:20px;">🔗 Go to Login Page</a>
   <div style="background:#E6F1FB;border-radius:8px;padding:16px;margin-bottom:16px;">
     <p style="font-size:14px;font-weight:600;color:#0C447C;margin-bottom:8px;">🌟 Need Help? We're Here for You!</p>
@@ -39,7 +82,7 @@ function buildHTML(name, email) {
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
-  const { members } = req.body
+  const { members, submissionDate } = req.body
   if (!members || !Array.isArray(members)) return res.status(400).json({ error: 'Invalid members list' })
 
   const results = []
@@ -49,7 +92,7 @@ export default async function handler(req, res) {
         from: `${process.env.SENDER_NAME} <${process.env.SENDER_EMAIL}>`,
         to: [member.email],
         subject: 'You have been registered successfully with Kairotech Solutions',
-        html: buildHTML(member.name, member.email),
+        html: buildHTML(member.name, member.email, submissionDate),
         tags: [{ name: 'member', value: member.email.replace('@','_').replace(/\./g,'_') }]
       })
       results.push({ email: member.email, status: 'sent' })
