@@ -24,7 +24,7 @@ function buildHTML(name, email, submissionDate) {
   <div style="background:#FFF8E6;border:1px solid #F5C842;border-radius:8px;padding:14px 16px;margin-bottom:16px;text-align:center;">
     <p style="font-size:12px;font-weight:600;color:#7A5C00;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">⏰ Submission Deadline</p>
     <p style="font-size:15px;font-weight:700;color:#7A5C00;margin-bottom:12px;">📅 ${formatted}</p>
-    <a href="https://redalertsol.com/countdown/${submissionDate}"
+    <a href="https://kairotechsolutions.com/countdown/${submissionDate}"
        style="display:inline-block;background:#185FA5;color:#fff;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;text-decoration:none;">
       ⏱ View Live Countdown
     </a>
