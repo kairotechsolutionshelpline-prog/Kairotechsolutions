@@ -30,7 +30,7 @@ const countdownBlock = deadline ? `
 
   return `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:0;">
 <div style="background:#185FA5;padding:18px 24px;display:flex;align-items:center;gap:12px;">
-  <div style="width:40px;height:40px;border-radius:50%;background:#E6F1FB;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#185FA5;">${name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2)}</div>
+  <img src="https://kairotechsolutions-production.up.railway.app/logo.png" style="width:40px;height:40px;border-radius:50%;object-fit:cover;display:inline-block;flex-shrink:0;" alt="Kairotech Logo" />
   <div style="display:inline-block;margin-left:12px;">
     <div style="color:#E6F1FB;font-size:16px;font-weight:600;">Kairotech Solutions</div>
     <div style="color:#B5D4F4;font-size:12px;">Registration Confirmation</div>
