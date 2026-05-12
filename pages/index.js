@@ -222,7 +222,6 @@ export default function Home() {
 
             <div style={{ marginTop: '16px', marginBottom: '12px' }}>
               <label style={styles.label}>📅 Submission Deadline (optional)</label>
-              <select
                 <select
   value={submissionDate}
   onChange={e => setSubmissionDate(e.target.value)}
@@ -281,7 +280,7 @@ export default function Home() {
               <p style={{ fontSize: '14px', fontWeight: '500' }}>kairotechsolutionshelpline@gmail.com</p>
             </div>
           </div>
-          
+          <a
             href="mailto:kairotechsolutionshelpline@gmail.com?subject=Helpline Request&body=Hi Kairotech Helpline Team,%0A%0AName : %0AIssue : %0A%0AThank you."
             style={styles.mailLink}
           >
