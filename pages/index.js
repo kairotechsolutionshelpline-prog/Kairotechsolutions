@@ -10,6 +10,7 @@ export default function Home() {
   const [sending, setSending] = useState(false)
   const [history, setHistory] = useState([])
   const [submissionDate, setSubmissionDate] = useState('')
+  const [liveCountdown, setLiveCountdown] = useState(null)
 
   useEffect(() => {
     const a = sessionStorage.getItem('kt_auth')
@@ -17,6 +18,27 @@ export default function Home() {
     const h = localStorage.getItem('kt_history')
     if (h) setHistory(JSON.parse(h))
   }, [])
+ 
+  // 👇 ADD THIS NEW useEffect RIGHT AFTER THE ONE ABOVE
+  useEffect(() => {
+    if (!submissionDate) { setLiveCountdown(null); return }
+    const tick = () => {
+      const now = new Date()
+      const deadline = new Date(submissionDate)
+      deadline.setHours(23, 59, 59, 0)
+      const diff = deadline - now
+      if (diff <= 0) return setLiveCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+      setLiveCountdown({
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff % 86400000) / 3600000),
+        minutes: Math.floor((diff % 3600000) / 60000),
+        seconds: Math.floor((diff % 60000) / 1000)
+      })
+    }
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [submissionDate])
 
   function getDateOptions() {
     const options = []
@@ -201,15 +223,31 @@ export default function Home() {
             <div style={{ marginTop: '16px', marginBottom: '12px' }}>
               <label style={styles.label}>📅 Submission Deadline (optional)</label>
               <select
-                value={submissionDate}
-                onChange={e => setSubmissionDate(e.target.value)}
-                style={{ ...styles.input, marginBottom: 0 }}
-              >
-                <option value="">-- No deadline --</option>
-                {getDateOptions().map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
+                <select
+  value={submissionDate}
+  onChange={e => setSubmissionDate(e.target.value)}
+  style={{ ...styles.input, marginBottom: 0 }}
+>
+  <option value="">-- No deadline --</option>
+  {getDateOptions().map(opt => (
+    <option key={opt.value} value={opt.value}>{opt.label}</option>
+  ))}
+</select>
+
+{/* 👇 ADD THIS RIGHT AFTER </select> */}
+{liveCountdown && (
+  <div style={{ background: '#FFF8E6', border: '1px solid #F5C842', borderRadius: '8px', padding: '12px', marginTop: '10px', textAlign: 'center' }}>
+    <p style={{ fontSize: '11px', fontWeight: '600', color: '#7A5C00', marginBottom: '8px' }}>⏰ Live countdown</p>
+    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+      {[['days', 'Days'], ['hours', 'Hours'], ['minutes', 'Min'], ['seconds', 'Sec']].map(([key, label]) => (
+        <div key={key} style={{ background: '#fff', border: '1px solid #F5C842', borderRadius: '6px', padding: '6px 12px', minWidth: '48px' }}>
+          <div style={{ fontSize: '22px', fontWeight: '700', color: '#185FA5' }}>{String(liveCountdown[key]).padStart(2,'0')}</div>
+          <div style={{ fontSize: '10px', color: '#888' }}>{label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
             </div>
 
             <button onClick={sendAll} disabled={sending} style={{ ...styles.primaryBtn, marginTop: '8px', opacity: sending ? 0.7 : 1 }}>
